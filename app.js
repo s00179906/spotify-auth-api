@@ -7,7 +7,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 const client_id = process.env.CLIENT_ID; // Your client id
 const client_secret = process.env.CLIENT_SECRET; // Your secret
-const redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
+const redirect_uri =
+  process.env.REDIRECT_URI || 'http://localhost:8888/callback'; // Your redirect uri
 const port = process.env.PORT || 8888;
 
 /**
@@ -48,7 +49,8 @@ app.get('/login', function(req, res) {
         client_id: client_id,
         scope: scope,
         redirect_uri: redirect_uri,
-        state: state
+        state: state,
+        show_dialog: true
       })
   );
 });
