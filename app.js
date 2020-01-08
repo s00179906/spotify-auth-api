@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 const client_id = process.env.CLIENT_ID; // Your client id
-const client_secret = process.env.CLIENT_SECRET; // Your secret
+const client_secret = process.env.SECRET_ID; // Your secret
 const redirect_uri =
   process.env.REDIRECT_URI || 'http://localhost:8888/callback'; // Your redirect uri
 const port = process.env.PORT || 8888;
@@ -124,19 +124,22 @@ app.get('/callback', function(req, res) {
   }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', (req, res) => {
   // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
+  const { refresh_token } = req.query;
+
+  const basic = `Basic ${new Buffer.from(
+    client_id + ':' + client_secret
+  ).toString('base64')}`;
+
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
-      Authorization:
-        'Basic ' +
-        new Buffer(client_id + ':' + client_secret).toString('base64')
+      Authorization: basic
     },
     form: {
       grant_type: 'refresh_token',
-      refresh_token: refresh_token
+      refresh_token
     },
     json: true
   };
